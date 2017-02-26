@@ -89,6 +89,7 @@
 
         renderer.shadowMap.enabled = true;
         renderer.shadowMapSoft = true;
+        //renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         //scence
         var scene = new THREE.Scene();
