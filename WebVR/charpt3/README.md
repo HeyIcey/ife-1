@@ -1,4 +1,4 @@
-##WebGL No.2 - 光和影
+##WebGL No.3 - 材质和纹理
 
 ###效果图
 ![效果图](charpt3.png)
