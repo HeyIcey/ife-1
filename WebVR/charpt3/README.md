@@ -1,7 +1,7 @@
 ##WebGL No.2 - 光和影
 
 ###效果图
-![效果图](charpt2.png)
+![效果图](charpt3.png)
 
 ###demo
 [http://teresaruan.github.io/ife/WebVR/charpt3/index.html](http://teresaruan.github.io/ife/WebVR/charpt3/index.html)
