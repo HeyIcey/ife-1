@@ -1,35 +1,84 @@
 (function () {
 
     var eleList = [];
-
+    var renderer = null;
+    var scene = null;
+    var camera = null;
+    var textureList = [];
     var car = {
         drawCube: function ( { width, height, depth, x = 0, y = 0, z = 0, shadow = true, color = 0x4e5dad }) {
-            let cube = new THREE.Mesh( new THREE.CubeGeometry( width, height, depth ),
+            /*let cube = new THREE.Mesh( new THREE.CubeGeometry( width, height, depth ),
                 new THREE.MeshLambertMaterial({
                     color: color
                 })
             );
             shadow && ( cube.castShadow = true );
             cube.position.set( x, y, z );
-            return cube;
+            return cube;*/
+            let material;
+            let loader = new THREE.TextureLoader();
+            loader.load(
+                'texture/car.jpg',
+                function (texture) {
+                    material = new THREE.MeshLambertMaterial({
+                        map: texture
+                    });
+                    let cube = new THREE.Mesh( new THREE.CubeGeometry( width, height, depth ),
+                        material
+                    );
+                    shadow && ( cube.castShadow = true );
+                    cube.position.set( x, y, z );
+                    scene.add( cube );
+                    renderer.render( scene,camera );
+                }
+            );
         },
         drawWheel: function ( radius, tube, rs, ts, x = 0, y = 0, z = 1, color = 0x2d2d2b ) {
-            let wheel = new THREE.Mesh( new THREE.TorusGeometry( radius, tube, rs, ts ),
+            /*let wheel = new THREE.Mesh( new THREE.TorusGeometry( radius, tube, rs, ts ),
                 new THREE.MeshLambertMaterial({
                     color: color
                 })
             );
             wheel.castShadow = true;
             wheel.position.set( x, y, z );
-            return wheel;
+            return wheel;*/
+            let material;
+            let loader = new THREE.TextureLoader();
+            loader.load(
+                'texture/tai.jpg',
+                function (texture) {
+                    material = new THREE.MeshLambertMaterial({
+                        map: texture
+                    });
+                    let wheel = new THREE.Mesh( new THREE.TorusGeometry( radius, tube, rs, ts ), material);
+                    wheel.position.set( x, y, z);
+                    scene.add( wheel );
+                    renderer.render(scene, camera);
+                }
+            );
         },
         drawWindow: function ( width, height, color = 0xbcd4e4, x = 0, y = .3 , z = 1 ) {
-            let window = new THREE.Mesh(new THREE.PlaneGeometry( width,height),
-                new THREE.MeshPhongMaterial({
-                    color: color
-                }));
-            window.position.set( x, y, z);
-            return window;
+            let material;
+            let loader = new THREE.TextureLoader();
+            loader.load(
+                'texture/glass.jpg',
+                function (texture) {
+                    material = new THREE.MeshPhongMaterial({
+                        specular: 0xffffff,
+                        emissive: 0xffffff,
+                        emissiveIntensity: 0.4,
+                        shininess:1000,
+                        map: texture
+                    });
+                    let window = new THREE.Mesh(new THREE.PlaneGeometry( width,height), material);
+                    window.position.set( x, y, z);
+                    scene.add( window );
+                    renderer.render(scene, camera);
+                }
+            );
+            //let window = new THREE.Mesh(new THREE.PlaneGeometry( width,height), material);
+            //window.position.set( x, y, z);
+
         },
         drawGeometry: function ( color = 0x4e5dad ){
             let geometry = new THREE.Geometry();
@@ -60,21 +109,26 @@
         },
         drawCar: function () {
             //body
-            eleList.push( this.drawCube( { width: 3, height: 2, depth: 2}) );
-            eleList.push( this.drawCube( { width: .05, height: 2, depth:2, color: 0x4e5dad, x: -1.525} ));
+            //eleList.push( this.drawCube( { width: 3, height: 2, depth: 2}) );
+            //eleList.push( this.drawCube( { width: .05, height: 2, depth:2, color: 0x4e5dad, x: -1.525} ));
 
             //head
            // eleList.push( this.drawGeometry());
             eleList.push( this.drawCube( { width: .8, height: 1, depth: 2, x: -1.95, y: -0.5 } ));
 
             //window
-            eleList.push( this.drawWindow( 1.8, .7));
+           // eleList.push( this.drawWindow( 1.8, .7));
 
             //wheels
-            eleList.push( this.drawWheel(  .25,.18, 4, 30, -1.4, -1, -0.5) );
-            eleList.push( this.drawWheel( .25,.18, 4, 30, .8, -1, -0.5) );
-            eleList.push( this.drawWheel(  .25,.18, 4, 30, -1.4, -1) );
-            eleList.push( this.drawWheel( .25,.18, 4, 30, .8, -1) );
+            //eleList.push( this.drawWheel(  .25,.18, 4, 30, -1.4, -1, -0.5) );
+            //eleList.push( this.drawWheel( .25,.18, 4, 30, .8, -1, -0.5) );
+            //eleList.push( this.drawWheel(  .25,.18, 4, 30, -1.4, -1) );
+            //eleList.push( this.drawWheel( .25,.18, 4, 30, .8, -1) );
+
+             //this.drawWheel(  .25,.18, 4, 30, -1.4, -1, -0.5) ;
+             //this.drawWheel( .25,.18, 4, 30, .8, -1, -0.5) ;
+             //this.drawWheel(  .25,.18, 4, 30, -1.4, -1) ;
+             //this.drawWheel( .25,.18, 4, 30, .8, -1) ;
         }
 
     };
@@ -82,7 +136,7 @@
     function init() {
 
         //render
-        var renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize( 800, 400 );
         renderer.setClearColor( 0xcccccc );
         document.body.appendChild( renderer.domElement );
@@ -92,10 +146,10 @@
         //renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         //scence
-        var scene = new THREE.Scene();
+        scene = new THREE.Scene();
 
         //camera
-        var camera = new THREE.PerspectiveCamera( 45, 8 / 4, 1, 1000 );
+        camera = new THREE.PerspectiveCamera( 45, 8 / 4, 1, 1000 );
         camera.position.set( -5, 0, 5);
         camera.lookAt( new THREE.Vector3( 0, 0, 0) );
         eleList.push( camera );
@@ -107,6 +161,15 @@
         eleList.map(function ( ele ) {
             scene.add( ele )
         });
+        car.drawWindow( 1.8, .7);
+
+        car.drawWheel(  .25,.18, 4, 30, -1.4, -1, -0.5) ;
+        car.drawWheel( .25,.18, 4, 30, .8, -1, -0.5) ;
+        car.drawWheel(  .25,.18, 4, 30, -1.4, -1) ;
+        car.drawWheel( .25,.18, 4, 30, .8, -1) ;
+
+       car.drawCube( { width: 3, height: 2, depth: 2});
+       car.drawCube( { width: .05, height: 2, depth:2, color: 0x4e5dad, x: -1.525} );
 
 
         renderer.render(scene, camera);
@@ -148,15 +211,40 @@
     }
 
     function  addFloor() {
+
+        let material;
+        let loader = new THREE.TextureLoader();
+        loader.load(
+            'texture/desk.jpg',
+            function (texture) {
+                material = new THREE.MeshLambertMaterial({
+                    map: texture
+                });
+
         let floor = new THREE.Mesh( new THREE.PlaneGeometry( 10, 10, 26, 16 ),
             new THREE.MeshLambertMaterial({
-                color: 0x505050
+                color: 0xcccccc,
+                map: texture
             })
         );
         floor.rotation.x = - Math.PI / 2 ;
         floor.position.y = -1.45;
         floor.receiveShadow = true;
-        eleList.push( floor );
+        scene.add(floor);
+                renderer.render(scene,camera);
+    })
+    }
+    new THREE.MeshFaceMaterial();
+    
+    function  changeMaterial( mesh, material) {
+        let loader = new THREE.TextureLoader();
+        loader.load(
+            material.path,
+            function (texture) {
+                mesh.material = material.material;
+                renderer.render( scene, camera );
+            }
+        )
     }
     init();
 })();
